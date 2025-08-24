@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+<head>
+<title id="e">Unamed Youtube Thing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<meta charset="utf-16">
+</head>
+<body style="font-family:roboto; background: linear-gradient(0.19turn, #ccd9eb, #cad6e9, #8faad4, #aebed9)">
+<h1 style=" text-align:center;">Unamed Youtube Thing</h1>
+<h3 id="title"></h3>
+<dialog style="display:block; width:720px; height:567px; border-radius:20px">
+<a target="blank" id="thumba"><img src="hi.jpg" style="width:293px; height:197px; border:solid; border-radius:15px; border-width:1px; border-color:#2e2e32; position:inline" id="thumb"></a>
+<div id="div">
+<h3><a id="em" class="em" target="blank">Embed Video</a><button id="copyem" style="display:none" onclick="copy(`${document.querySelector('#em').href}`)">📎</button>
+<a id="vl" class="vl" target="blank">Video Link</a><button id="copyvl" style="display:none" onclick="copy(`${document.querySelector('#vl').href}`)">📎</button>
+</h3>
+<p id="info">
+</p>
+</div>
+<h3 id="name"></h3>
+<div>
+<input style="bottom:0; display:flex" placeholder="Paste in id here" id="id">
+<a target="blank" id="tubera"><img id="tuber"></img></a>
+<p id="ui"></p>
+</div>
+<button id="thumbd" onclick="download()">Download Thumbnail</button>
+</dialog>
+</body>
+</html>
+<script>
+document.getElementById("id").addEventListener("keydown", (e) => {if(e.key == 'Enter'){info(document.getElementById("id").value)}})
+console.log("Hello person, feel free to use my api key")
+async function info(url){
+const api = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${url}&key=AIzaSyAGUcFs0erusDTY5tLxU0DjD5ZB-X1TvaQ`
+try{
+const res = await fetch(api)
+if(!res.ok){
+throw new Error(`Error: HTTP status code ${res.status}`)
+document.querySelector("#thumb").src = "hi.jpg"
+}
+const json = await res.json()
+const user = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails,statistics&id=${json.items['0'].snippet.channelId}&key=AIzaSyAGUcFs0erusDTY5tLxU0DjD5ZB-X1TvaQ`)
+const userjson = await user.json()
+if(!user.ok){
+throw new Error(`Error: HTTP status code ${user.status}`)
+}
+document.querySelector(".em").style.display = "block"
+document.querySelector(".vl").style.display = "block"
+document.querySelector("#copyem").style.display = "inline"
+document.querySelector("#copyvl").style.display = "inline"
+document.querySelector("#em").href = `https://www.youtube-nocookie.com/embed/${json.items['0'].id}`
+document.querySelector("#vl").href = `https://youtu.be/${json.items['0'].id}`
+document.querySelector("#info").innerText = `ViewCount:${json.items['0'].statistics.viewCount}
+View to Like ratio:${((json.items['0'].statistics.likeCount/json.items['0'].statistics.viewCount)*100).toFixed(2)}%
+LikeCount:${json.items['0'].statistics.likeCount}
+CommentCount:${json.items['0'].statistics.commentCount}
+id:${json.items['0'].id}
+publishedAt:${json.items['0'].snippet.publishedAt	.slice(0, 10)}`
+document.querySelector('#title').innerText = json.items['0'].snippet.title
+let nail = json.items['0'].snippet.thumbnails.maxres.url
+nail === undefined ? nail = json.items['0'].snippet.thumbnails.standerd.url : null
+document.querySelector("#thumb").src = nail
+document.querySelector("#thumba").href = json.items['0'].snippet.thumbnails.maxres.url
+document.querySelector("#tuber").src = userjson.items['0'].snippet.thumbnails.medium.url
+document.querySelector("#tubera").href = userjson.items['0'].snippet.thumbnails.medium.url
+document.querySelector("#name").innerText = json.items['0'].snippet.channelTitle
+document.querySelector("#ui").innerText = `Title:${json.items['0'].snippet.channelTitle}
+SubscriberCount:${userjson.items['0'].statistics.subscriberCount}
+viewCount:${userjson.items['0'].statistics.viewCount}
+videoCount:${userjson.items['0'].statistics.videoCount}
+CreatedAt:${userjson.items['0'].snippet.publishedAt	.slice(0, 10)}
+Country:${userjson.items['0'].snippet.country}`
+}
+catch(er){
+window.alert(er.message)
+}
+}
+function copy(tex){
+var text = document.createElement("textarea")
+var ind = document.createElement("p")
+ind.innerText = "Copied text!"
+document.body.appendChild(text)
+text.innerText = tex
+text.select()
+document.execCommand("copy")
+document.body.focus()
+document.body.removeChild(text)
+document.body.appendChild(ind)
+ind.style = "position: absolute; left: 57em; top: 21em;"
+setTimeout(() => {ind.style.animation = "fade 500ms"}, 500)
+setTimeout(()=>{ind.style.opacity = "0%"}, 1000)
+}
+async function download(){
+const res = await fetch(document.querySelector("#thumba").href, {mode:'cors',credentials:'omit'})
+try{
+var link = document.createElement("a")
+const blob = await res.blob()
+const url = await URL.createObjectURL(blob)
+link.href = url
+link.download = `Youtube Thumbnail - ${document.querySelector('#title').innerText}.jpg`
+document.body.appendChild(link)
+link.click()
+document.body.removeChild(link)
+}
+catch(er){
+window.alert(er.message)
+}
+}
+</script>
+<style>
+a {
+display:none;
+color:#3584e4;
+transition:300ms
+}
+a:hover {
+color:#175aac;
+}
+#div {
+position:absolute;
+top:0;
+right:20px
+}
+#copyem {
+right: 9px;
+top: 19px;
+background-color: white;
+position: absolute;
+border: none;
+border-radius:5px;
+padding:1px;
+transition:300ms
+}
+#copyvl {
+right: 22px;
+top: 42px;
+background-color: white;
+position: absolute;
+border: none;
+border-radius:5px;
+padding:1px;
+transition:300ms
+}
+#div button:hover {
+background-color:#bebebe;
+transition:50ms
+}
+#div button:active {
+background-color:#9b9b9b
+}
+@keyframes  fade{
+1%{opacity:100%}
+25%{opacity:95%}
+100%{opacity:0%}
+}
+h3 {
+text-align:center
+}
+input {
+border: none;
+box-shadow: 2px 3px 5px #6f6f6e;
+border-radius: 4px;
+text-align: center;
+width: 15em;
+height: 2em;
+color: #575757;
+position: absolute;
+top: 42em;
+}
+#tuber {
+width: 55px;
+border-radius: 55px;
+position: absolute;
+top: 27em;
+left: 43em;
+}
+#name {
+text-align: right;
+top: 11.5em;
+position: relative;
+left: -3em;
+}
+#ui {
+position: absolute;
+right: 0.5em;
+top: 29em;
+}
+#tubera {
+display:block
+}
+
+#thumba {
+display:block
+}
+#thumbd {
+color: white;
+background-color: red;
+border: none;
+border-radius: 50px;
+width: 50px;
+height: 50px;
+box-shadow: 1px 2px 5px red;
+position: absolute;
+left: 19em;
+top: 40.5em;
+transition:300ms;
+width:9em;
+}
+#thumbd:hover {
+background-color:#af0000;
+box-shadow:1px 2px 5px #af0000
+}
+</style>
