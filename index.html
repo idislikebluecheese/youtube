@@ -68,6 +68,7 @@ document.querySelector("#tubera").href = userjson.items['0'].snippet.thumbnails.
 document.querySelector("#name").innerText = json.items['0'].snippet.channelTitle
 document.querySelector("#ui").innerText = `Title:${json.items['0'].snippet.channelTitle}
 SubscriberCount:${userjson.items['0'].statistics.subscriberCount}
+Chanel:${userjson.items['0'].snippet.customUrl}
 viewCount:${userjson.items['0'].statistics.viewCount}
 videoCount:${userjson.items['0'].statistics.videoCount}
 CreatedAt:${userjson.items['0'].snippet.publishedAt	.slice(0, 10)}
@@ -173,19 +174,19 @@ top: 42em;
 width: 55px;
 border-radius: 55px;
 position: absolute;
-top: 27em;
+top: 26em;
 left: 43em;
 }
 #name {
 text-align: right;
-top: 11.5em;
+top: 10.5em;
 position: relative;
 left: -3em;
 }
 #ui {
 position: absolute;
 right: 0.5em;
-top: 29em;
+top: 28em;
 }
 #tubera {
 display:block
@@ -212,4 +213,5 @@ width:9em;
 background-color:#af0000;
 box-shadow:1px 2px 5px #af0000
 }
+a 
 </style>
